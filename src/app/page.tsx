@@ -1,4 +1,5 @@
 import { getProducts } from "../lib/products";
+import Link from "next/link";
 export default async function Home() {
 
   const [products] = await Promise.all([
@@ -44,9 +45,9 @@ export default async function Home() {
                       </span>
                       
                     </div>
-                    <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
+                    <Link href={`/dashboard/products/${product.id}/detail`} className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
                       Lihat Detail
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/products";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function DashboardPage() {
   const [ products] = await Promise.all([
@@ -29,6 +30,14 @@ export default async function DashboardPage() {
               <p className="text-3xl md:text-4xl font-bold text-blue-600 mb-1">{products.length}</p>
               <h3 className="text-lg md:text-xl font-semibold text-gray-800">Total Produk</h3>
               <p className="text-xs md:text-sm text-gray-500">Jumlah produk tersedia</p>
+              <div className="flex items-center justify-between mt-5">
+                <Link 
+                  href="/dashboard/products/add"
+                  className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium"
+                >
+                  Tambah Produk
+                </Link>
+              </div>
             </div>
             
             {/* Categories Count Card */}
@@ -77,16 +86,14 @@ export default async function DashboardPage() {
                   <div className="mt-auto">
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-xl font-bold text-purple-600">
-                        ${product.price}
+                        Rp. {product.price}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <Link href={`/dashboard/products/${product.id}/edit`} as={`/dashboard/products/${product.id}/edit`} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
                         Edit
                       </Link>
-                      <button className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
-                        Delete
-                      </button>
+                      <DeleteButton id={product.id}/>
                     </div>
                   </div>
                 </div>

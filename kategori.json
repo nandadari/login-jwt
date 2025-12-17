@@ -1,0 +1,56 @@
+{
+  "kategori": [
+    {
+      "id": "1",
+      "nama": "Electronics"
+    },
+    {
+      "id": "2",
+      "nama": "Jewelry"
+    },
+    {
+      "id": "3",
+      "nama": "Men's Clothing"
+    },
+    {
+      "id": "4",
+      "nama": "Women's Clothing"
+    },
+    {
+      "id": "95b3",
+      "nama": "kosmetik"
+    },
+    {
+      "id": "6410",
+      "nama": "Perlengkapan Rumah"
+    },
+    {
+      "id": "92b6",
+      "nama": "Aksesoris"
+    },
+    {
+      "id": "2362",
+      "nama": "Tas Pria"
+    },
+    {
+      "id": "92a1",
+      "nama": "Tas Wanita"
+    },
+    {
+      "id": "b3a1",
+      "nama": "Sepatu Pria"
+    },
+    {
+      "id": "5291",
+      "nama": "Sepatu Wanita"
+    },
+    {
+      "id": "b294",
+      "nama": "Perawatan & Kecantikan"
+    },
+    {
+      "id": "52ce",
+      "nama": "Bayi dan Anak"
+    }
+  ]
+}

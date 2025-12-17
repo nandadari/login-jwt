@@ -4,6 +4,8 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getKategori } from '@/lib/kategori';
+
 
 // Definisikan tipe untuk produk
 type ProductType = {
@@ -13,6 +15,10 @@ type ProductType = {
   category: string;
   description: string;
   image: string; // Ini akan berisi string Base64 atau URL
+};
+type KategoriType = {
+  id: string | number;
+  nama: string;
 };
 
 // Helper: Mengubah File menjadi string Base64
@@ -27,7 +33,7 @@ export default function EditProductForm({ product }: { product: ProductType }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  
+  const [listKategori, setListKategori] = useState<KategoriType[]>([]);
   // State untuk data yang akan dikirim (diinisialisasi dari prop product)
   const [formData, setFormData] = useState({
     title: product.title,
@@ -38,6 +44,19 @@ export default function EditProductForm({ product }: { product: ProductType }) {
 
   // State untuk menampilkan gambar (bisa dari Base64 lama, atau URL Blob baru)
   const [imageUrl, setImageUrl] = useState<string>(product.image);
+
+    // Fetch Kategori
+    useEffect(() => {
+      const fetchKategori = async () => {
+        try {
+          const data = await getKategori();
+          setListKategori(data);
+        } catch (err) {
+          console.error("Gagal mengambil kategori", err);
+        }
+      };
+      fetchKategori();
+    }, []);
 
   // Fungsi untuk update state teks (Title, Price, Category, Description)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -117,7 +136,7 @@ export default function EditProductForm({ product }: { product: ProductType }) {
   return (
     <div className="min-h-screen bg-stone-100 px-4 py-8 rounded-lg">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Produk #{product.id}</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Produk</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-md">
@@ -142,12 +161,12 @@ export default function EditProductForm({ product }: { product: ProductType }) {
                     type="file"
                     id="file"
                     name="file" // Ubah nama input menjadi 'file' saja agar konsisten
-                    className="text-sm text-gray-500"
+                    className="border text-center border-gray rounded shadow-lg text-sm text-gray-500"
                     accept="image/jpeg, image/png, image/gif"
                     onChange={handleFileChange}
                     disabled={isLoading}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Ganti gambar (Maks 2MB Base64)</p>
+                  <p className="text-xs text-center text-gray-500 mt-1">Ganti gambar (Maks 2MB)</p>
                 </div>
               </div>
             </div>
@@ -202,10 +221,9 @@ export default function EditProductForm({ product }: { product: ProductType }) {
                   disabled={isLoading}
                 >
                   <option value="">Pilih Kategori</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="jewelery">Jewelry</option>
-                  <option value="men's clothing">Men's Clothing</option>
-                  <option value="women's clothing">Women's Clothing</option>
+                  {listKategori.map((cat) => (
+                    <option key={cat.id} value={cat.nama}>{cat.nama}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -229,7 +247,7 @@ export default function EditProductForm({ product }: { product: ProductType }) {
 
           <div className="flex justify-end pt-4">
             <Link
-              href="/dashboard/products"
+              href="/dashboard"
               className={`px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mr-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               Batal

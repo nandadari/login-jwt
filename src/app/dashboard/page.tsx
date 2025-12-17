@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/products";
 import DeleteButton from "@/components/DeleteButton";
+import { getKategori } from "@/lib/kategori";
 
 export default async function DashboardPage() {
-  const [ products] = await Promise.all([
-    getProducts()
+  const [ products, kategori] = await Promise.all([
+    getProducts(),
+    getKategori()
   ]);
-  
-  const categories = [...new Set(products.map((p: any) => p.category))];
-  const totalValue = products.reduce((sum: number, product: any) => sum + product.price, 0);
+
+  const kategoriCount = kategori.length;
   
   return (
     <div className="min-h-screen mx-auto px-4 py-8 bg-purple-100">
@@ -44,12 +45,20 @@ export default async function DashboardPage() {
             <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 border border-gray-100">
               <div className="bg-green-100 rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center mx-auto mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 md:h-10 md:w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2m-6 0h6" />
                 </svg>
               </div>
-              <p className="text-3xl md:text-4xl font-bold text-green-600 mb-1">{categories.length}</p>
+              <p className="text-3xl md:text-4xl font-bold text-green-600 mb-1">{kategoriCount}</p>
               <h3 className="text-lg md:text-xl font-semibold text-gray-800">Kategori</h3>
               <p className="text-xs md:text-sm text-gray-500">Jumlah kategori produk</p>
+              <div className="flex items-center justify-between mt-5">
+                <Link 
+                  href="/dashboard/kategori"
+                  className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium"
+                >
+                  Manage Kategori
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -92,7 +101,7 @@ export default async function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <Link href={`/dashboard/products/${product.id}/edit`} as={`/dashboard/products/${product.id}/edit`} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
                         Edit
-                      </Link>
+                        </Link>
                       <DeleteButton id={product.id}/>
                     </div>
                   </div>

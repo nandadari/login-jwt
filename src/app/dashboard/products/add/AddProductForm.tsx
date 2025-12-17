@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getKategori } from '@/lib/kategori';
 
 type FormDataType = {
   title: string;
@@ -20,6 +21,10 @@ type FormErrors = {
   'file-upload'?: string;
   form?: string;
 };
+type KategoriType = {
+  id: string | number;
+  nama: string;
+};
 
 // Helper: Mengubah File menjadi string Base64 agar bisa disimpan di JSON
 const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
@@ -30,13 +35,6 @@ const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
 });
 
 // --- HELPER BARU UNTUK HARGA ---
-/**
- * Membersihkan string harga dari titik (.) sebagai pemisah ribuan.
- * Jika Anda menggunakan koma (,) untuk desimal (misal 100.000,50), 
- * koma akan diubah menjadi titik agar Number() dapat membacanya.
- * @param value string input harga
- * @returns string harga yang bersih dari pemisah ribuan (misal "5000000")
- */
 const cleanPrice = (value: string): string => {
   // 1. Hapus semua titik/dot (diasumsikan sebagai pemisah ribuan di Indonesia)
   let cleaned = value.replace(/\./g, ''); 
@@ -71,7 +69,7 @@ export default function AddProductForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-  
+  const [listKategori, setListKategori] = useState<KategoriType[]>([]);
   const [formData, setFormData] = useState<FormDataType>({
     title: '',
     price: '', // Tetap string untuk menampung format titik
@@ -79,6 +77,20 @@ export default function AddProductForm() {
     description: '',
     'file-upload': null,
   });
+
+
+  // Fetch Kategori
+  useEffect(() => {
+    const fetchKategori = async () => {
+      try {
+        const data = await getKategori();
+        setListKategori(data);
+      } catch (err) {
+        console.error("Gagal mengambil kategori", err);
+      }
+    };
+    fetchKategori();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -128,7 +140,6 @@ export default function AddProductForm() {
 
     if (!formData.category) newErrors.category = 'Kategori harus dipilih';
     if (!formData.description.trim()) newErrors.description = 'Deskripsi harus diisi';
-
     if (!formData['file-upload']) {
       newErrors['file-upload'] = 'Gambar produk harus diunggah';
     } else {
@@ -211,7 +222,7 @@ export default function AddProductForm() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Tambah Produk Baru</h1>
+        <h1 className="text-2xl text-center underline font-bold text-gray-800 mb-6">Produk Baru</h1>
 
         {errors.form && (
           <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-md border border-red-200">
@@ -271,20 +282,15 @@ export default function AddProductForm() {
                   Kategori <span className="text-red-500">*</span>
                 </label>
                 <select
-                  id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2 border ${
-                    errors.category ? 'border-red-500' : 'border-gray-300'
-                  } rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all`}
-                  disabled={isLoading}
+                  className={`w-full px-4 py-2 border ${errors.category ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                 >
                   <option value="">Pilih kategori</option>
-                  <option value="electronics">Electronics</option>
-                  <option value="jewelery">Jewelry</option>
-                  <option value="men's clothing">Men's Clothing</option>
-                  <option value="women's clothing">Women's Clothing</option>
+                  {listKategori.map((cat) => (
+                    <option key={cat.id} value={cat.nama}>{cat.nama}</option>
+                  ))}
                 </select>
                 {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
               </div>

@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen mx-auto px-4 py-8 bg-purple-100">
       <div className="flex flex-col items-center justify-center space-y-6 p-4 md:p-6 bg-white shadow-lg rounded-lg max-w-7xl mx-auto">
-        <h1 className="text-3xl font-semibold text-center text-purple-600">Dashboard</h1>
+        <h1 className="text-3xl mt-10 font-semibold text-center text-purple-600">Dashboard</h1>
         <p className="text-lg font-medium text-gray-600">Selamat datang di halaman dashboard</p>
         
         {/* Stats Section */}
